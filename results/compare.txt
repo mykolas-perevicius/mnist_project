@@ -1,0 +1,157 @@
+Model: MLP
+Device: /GPU:0
+Test loss: 0.0765
+Test accuracy: 0.9764
+Next-Best Option (overall): 71.19%
+Top-2 accuracy: 0.9932
+Top-3 accuracy: 0.9977
+
+Per-class 'Next-Best Option' percentages (only among misclassifications):
+  Digit 0:  41.7%
+  Digit 1:  75.0%
+  Digit 2:  66.7%
+  Digit 3:  78.9%
+  Digit 4:  56.2%
+  Digit 5:  88.9%
+  Digit 6:  75.0%
+  Digit 7:  66.7%
+  Digit 8:  80.0%
+  Digit 9:  68.8%
+
+Confusion matrix:
+
+[[ 968    0    2    1    1    0    3    1    4    0]
+ [   0 1123    4    0    0    0    2    1    5    0]
+ [   3    0 1011    1    3    0    2    4    8    0]
+ [   0    0    3  991    0    3    0    4    8    1]
+ [   0    0    4    1  966    0    3    0    3    5]
+ [   2    1    0   12    0  865    5    0    7    0]
+ [   7    3    5    1    4    5  930    0    3    0]
+ [   0    4   13    7    0    0    0  995    3    6]
+ [   2    0    3    8    2    3    1    1  954    0]
+ [   5    4    2    8   14    2    0    4    9  961]]
+
+Classification report:
+
+              precision    recall  f1-score   support
+
+           0     0.9807    0.9878    0.9842       980
+           1     0.9894    0.9894    0.9894      1135
+           2     0.9656    0.9797    0.9726      1032
+           3     0.9621    0.9812    0.9716      1010
+           4     0.9758    0.9837    0.9797       982
+           5     0.9852    0.9697    0.9774       892
+           6     0.9831    0.9708    0.9769       958
+           7     0.9851    0.9679    0.9764      1028
+           8     0.9502    0.9795    0.9646       974
+           9     0.9877    0.9524    0.9697      1009
+
+    accuracy                         0.9764     10000
+   macro avg     0.9765    0.9762    0.9763     10000
+weighted avg     0.9766    0.9764    0.9764     10000
+
+
+Model: MLP
+Device: /GPU:0
+Test loss: 0.0881
+Test accuracy: 0.9793
+Next-Best Option (overall): 72.95%
+Top-2 accuracy: 0.9944
+Top-3 accuracy: 0.9980
+
+Per-class 'Next-Best Option' percentages (only among misclassifications):
+  Digit 0:  50.0%
+  Digit 1:  71.4%
+  Digit 2:  75.9%
+  Digit 3:  76.5%
+  Digit 4:  77.8%
+  Digit 5:  76.9%
+  Digit 6:  64.7%
+  Digit 7:  78.3%
+  Digit 8:  90.0%
+  Digit 9:  62.5%
+
+Confusion matrix:
+
+[[ 970    1    0    1    0    0    3    1    4    0]
+ [   0 1128    2    1    0    0    1    0    3    0]
+ [   4    2 1003    1    2    0    2    9    9    0]
+ [   1    0    4  993    0    2    0    3    7    0]
+ [   0    1    5    1  946    0    4    5    6   14]
+ [   3    1    0   10    1  866    2    0    9    0]
+ [   3    3    0    1    3    3  941    0    4    0]
+ [   0    2    5    4    0    0    0 1005    4    8]
+ [   1    0    3    3    0    1    0    2  964    0]
+ [   3    0    1    4    4    2    1    6   11  977]]
+
+Classification report:
+
+              precision    recall  f1-score   support
+
+           0     0.9848    0.9898    0.9873       980
+           1     0.9912    0.9938    0.9925      1135
+           2     0.9804    0.9719    0.9762      1032
+           3     0.9745    0.9832    0.9788      1010
+           4     0.9895    0.9633    0.9763       982
+           5     0.9908    0.9709    0.9807       892
+           6     0.9864    0.9823    0.9843       958
+           7     0.9748    0.9776    0.9762      1028
+           8     0.9442    0.9897    0.9664       974
+           9     0.9780    0.9683    0.9731      1009
+
+    accuracy                         0.9793     10000
+   macro avg     0.9795    0.9791    0.9792     10000
+weighted avg     0.9795    0.9793    0.9793     10000
+
+
+Model: CNN
+Device: /GPU:0
+Test loss: 0.0225
+Test accuracy: 0.9925
+Next-Best Option (overall): 86.67%
+Top-2 accuracy: 0.9990
+Top-3 accuracy: 0.9999
+
+Per-class 'Next-Best Option' percentages (only among misclassifications):
+  Digit 0:  75.0%
+  Digit 1: 100.0%
+  Digit 2: 100.0%
+  Digit 3: 100.0%
+  Digit 4: 100.0%
+  Digit 5:  90.0%
+  Digit 6:  81.8%
+  Digit 7:  90.0%
+  Digit 8:  75.0%
+  Digit 9:  80.0%
+
+Confusion matrix:
+
+[[ 976    0    1    1    0    0    1    0    1    0]
+ [   0 1133    2    0    0    0    0    0    0    0]
+ [   1    0 1024    1    1    0    0    5    0    0]
+ [   0    1    0 1005    0    1    0    0    3    0]
+ [   0    0    0    0  980    0    0    0    0    2]
+ [   2    0    0    6    0  882    1    0    0    1]
+ [   2    2    0    0    1    2  947    0    4    0]
+ [   0    3    4    1    0    0    0 1018    1    1]
+ [   1    0    2    2    0    1    0    1  966    1]
+ [   1    0    0    1    4    4    0    3    2  994]]
+
+Classification report:
+
+              precision    recall  f1-score   support
+
+           0     0.9929    0.9959    0.9944       980
+           1     0.9947    0.9982    0.9965      1135
+           2     0.9913    0.9922    0.9918      1032
+           3     0.9882    0.9950    0.9916      1010
+           4     0.9939    0.9980    0.9959       982
+           5     0.9910    0.9888    0.9899       892
+           6     0.9979    0.9885    0.9932       958
+           7     0.9912    0.9903    0.9908      1028
+           8     0.9887    0.9918    0.9903       974
+           9     0.9950    0.9851    0.9900      1009
+
+    accuracy                         0.9925     10000
+   macro avg     0.9925    0.9924    0.9924     10000
+weighted avg     0.9925    0.9925    0.9925     10000

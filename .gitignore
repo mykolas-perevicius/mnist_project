@@ -1,0 +1,15 @@
+# Virtual environments
+mnist_env/
+.venv/
+
+# Bytecode/cache
+__pycache__/
+*.pyc
+
+# Notebook checkpoints and HTML exports
+.ipynb_checkpoints/
+archive_assignment/*.ipynb
+archive_assignment/*.html
+
+# OS noise
+.DS_Store
