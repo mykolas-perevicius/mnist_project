@@ -13,6 +13,7 @@ Features:
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import os
 import pathlib
@@ -37,6 +38,7 @@ from tensorflow.keras import layers
 DEFAULT_SEED = 42
 DEFAULT_BATCH_SIZE = 128
 DEFAULT_VAL_SPLIT = 0.1
+DEFAULT_AUGMENTATION = "none"
 
 MODEL_PRESETS = {
     "mlp-shallow": {"hidden_layers": [128], "epochs": 10},
@@ -158,9 +160,40 @@ def load_and_preprocess_mnist(train_limit: int | None, test_limit: int | None) -
 # -----------------------------------------------------------------------------#
 # Models
 # -----------------------------------------------------------------------------#
-def build_mlp(hidden_layers: list[int]) -> keras.Model:
+def make_augmentation_layers(level: str) -> keras.Sequential | None:
+    """Create lightweight augmentation layers that only run during training."""
+    level = level.lower()
+    if level == "none":
+        return None
+
+    if level == "light":
+        return keras.Sequential(
+            [
+                layers.RandomRotation(0.08),
+                layers.RandomTranslation(0.08, 0.08),
+            ],
+            name="augment_light",
+        )
+
+    if level == "strong":
+        return keras.Sequential(
+            [
+                layers.RandomRotation(0.15),
+                layers.RandomTranslation(0.12, 0.12),
+                layers.RandomZoom(0.2),
+            ],
+            name="augment_strong",
+        )
+
+    raise ValueError(f"Unknown augmentation level: {level}")
+
+
+def build_mlp(hidden_layers: list[int], augment: keras.Sequential | None = None) -> keras.Model:
     inputs = keras.Input(shape=(28, 28, 1), name="input_image")
-    x = layers.Flatten(name="flatten")(inputs)
+    x = inputs
+    if augment is not None:
+        x = augment(x)
+    x = layers.Flatten(name="flatten")(x)
     for idx, units in enumerate(hidden_layers, start=1):
         x = layers.Dense(units, activation="relu", name=f"dense_{idx}")(x)
     outputs = layers.Dense(10, activation="softmax", name="output")(x)
@@ -170,9 +203,12 @@ def build_mlp(hidden_layers: list[int]) -> keras.Model:
     return model
 
 
-def build_cnn() -> keras.Model:
+def build_cnn(augment: keras.Sequential | None = None) -> keras.Model:
     inputs = keras.Input(shape=(28, 28, 1), name="input_image")
-    x = layers.Conv2D(32, (3, 3), padding="same", activation="relu", name="conv1")(inputs)
+    x = inputs
+    if augment is not None:
+        x = augment(x)
+    x = layers.Conv2D(32, (3, 3), padding="same", activation="relu", name="conv1")(x)
     x = layers.MaxPooling2D((2, 2), name="pool1")(x)
     x = layers.Conv2D(64, (3, 3), padding="same", activation="relu", name="conv2")(x)
     x = layers.MaxPooling2D((2, 2), name="pool2")(x)
@@ -321,10 +357,12 @@ def build_report(
     cls_report: str,
     confusion: np.ndarray,
     device: str,
+    augmentation: str,
 ) -> str:
     lines = [
         f"Model: {model_name}",
         f"Device: {device}",
+        f"Augmentation   : {augmentation}",
         f"Test loss: {test_loss:.4f}",
         f"Test accuracy: {test_acc:.4f}",
         f"Next-Best Option (overall): {nb_stats['overall_percentage']:.2f}%",
@@ -341,6 +379,140 @@ def build_report(
     lines.append("\nClassification report:\n")
     lines.append(cls_report)
     return "\n".join(lines)
+
+
+def resolve_generic_path(base_path: pathlib.Path, preset_name: str, multi: bool, default_filename: str) -> pathlib.Path:
+    """
+    If base_path has a suffix, use it as the filename (adding preset when multi).
+    Otherwise, treat base_path as a directory and append default_filename
+    (adding preset when multi).
+    """
+    if base_path.suffix:
+        if multi:
+            return base_path.with_name(f"{base_path.stem}-{preset_name}{base_path.suffix}")
+        return base_path
+
+    base_path.mkdir(parents=True, exist_ok=True)
+    stem, ext = os.path.splitext(default_filename)
+    filename = f"{stem}-{preset_name}{ext}" if multi else default_filename
+    return base_path / filename
+
+
+def resolve_plot_path(base_path: pathlib.Path, preset_name: str, multi: bool, kind: str) -> pathlib.Path:
+    """
+    Plot outputs are always treated as a directory-style target with stable names.
+    If base_path has a suffix, its stem becomes the prefix and the parent holds the plots.
+    """
+    if base_path.suffix:
+        directory = base_path.parent
+        prefix = base_path.stem
+    else:
+        directory = base_path
+        prefix = "mnist"
+
+    directory.mkdir(parents=True, exist_ok=True)
+    filename = f"{prefix}-{kind}"
+    if multi:
+        filename += f"-{preset_name}"
+    filename += ".png"
+    return directory / filename
+
+
+def save_history_csv(history: keras.callbacks.History, path: pathlib.Path) -> pathlib.Path | None:
+    metrics = history.history
+    if not metrics:
+        print("No training history to save.")
+        return None
+
+    keys = list(metrics.keys())
+    epochs = len(metrics[keys[0]])
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    with path.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["epoch", *keys])
+        for idx in range(epochs):
+            row = [idx + 1] + [metrics[key][idx] for key in keys]
+            writer.writerow(row)
+
+    print(f"Saved learning-curve CSV to {path}")
+    return path
+
+
+def _get_matplotlib_pyplot():
+    try:
+        import matplotlib.pyplot as plt
+    except ImportError:  # pragma: no cover - optional dependency
+        print("matplotlib is not installed; skipping plot exports.")
+        return None
+    return plt
+
+
+def plot_learning_curves(history: keras.callbacks.History, title: str, out_path: pathlib.Path) -> pathlib.Path | None:
+    plt = _get_matplotlib_pyplot()
+    if plt is None:
+        return None
+
+    hist = history.history
+    plt.figure(figsize=(7, 4))
+    if "accuracy" in hist:
+        plt.plot(hist["accuracy"], label="train accuracy")
+    if "val_accuracy" in hist:
+        plt.plot(hist["val_accuracy"], label="val accuracy")
+    if "loss" in hist:
+        plt.plot(hist["loss"], label="train loss", linestyle="--", alpha=0.7)
+    if "val_loss" in hist:
+        plt.plot(hist["val_loss"], label="val loss", linestyle="--", alpha=0.7)
+    plt.title(title)
+    plt.xlabel("Epoch")
+    plt.legend()
+    plt.grid(alpha=0.3)
+    plt.tight_layout()
+
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(out_path, dpi=200)
+    plt.close()
+    print(f"Saved plot to {out_path}")
+    return out_path
+
+
+def plot_confusion_matrix(confusion: np.ndarray, title: str, out_path: pathlib.Path) -> pathlib.Path | None:
+    plt = _get_matplotlib_pyplot()
+    if plt is None:
+        return None
+
+    fig, ax = plt.subplots(figsize=(6, 5))
+    im = ax.imshow(confusion, interpolation="nearest", cmap="Blues")
+    ax.figure.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+    ax.set(
+        xticks=np.arange(10),
+        yticks=np.arange(10),
+        xticklabels=list(range(10)),
+        yticklabels=list(range(10)),
+        xlabel="Predicted label",
+        ylabel="True label",
+        title=title,
+    )
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+
+    thresh = confusion.max() / 2.0 if confusion.max() > 0 else 0
+    for i in range(confusion.shape[0]):
+        for j in range(confusion.shape[1]):
+            ax.text(
+                j,
+                i,
+                format(confusion[i, j], "d"),
+                ha="center",
+                va="center",
+                color="white" if confusion[i, j] > thresh else "black",
+            )
+
+    fig.tight_layout()
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_path, dpi=200)
+    plt.close(fig)
+    print(f"Saved plot to {out_path}")
+    return out_path
 
 
 # -----------------------------------------------------------------------------#
@@ -366,12 +538,28 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--device", choices=["auto", "gpu", "cpu"], default="gpu")
     parser.add_argument("--require-gpu", action="store_true", help="Fail fast if no GPU is visible.")
     parser.add_argument("--validation-split", type=float, default=DEFAULT_VAL_SPLIT)
+    parser.add_argument(
+        "--augmentation",
+        choices=["none", "light", "strong"],
+        default=DEFAULT_AUGMENTATION,
+        help="Optional on-the-fly data augmentation (training only).",
+    )
     parser.add_argument("--train-limit", type=int, default=None, help="Optional train set cap for quick runs.")
     parser.add_argument("--test-limit", type=int, default=None, help="Optional test set cap for quick runs.")
     parser.add_argument("--demo", action="store_true", help="Shortcut for a quick smoke test (1 epoch, small split).")
     parser.add_argument("--save-metrics", type=pathlib.Path, help="Path to write metrics JSON.")
     parser.add_argument("--save-report", type=pathlib.Path, help="Path to write a readable text report.")
     parser.add_argument("--save-model", type=pathlib.Path, help="Directory to export the trained model (SavedModel).")
+    parser.add_argument(
+        "--save-history-csv",
+        type=pathlib.Path,
+        help="Optional CSV export of learning curves (accuracy/loss per epoch).",
+    )
+    parser.add_argument(
+        "--save-plots",
+        type=pathlib.Path,
+        help="Directory or filename prefix to store PNG plots (learning curves + confusion matrix).",
+    )
     return parser.parse_args()
 
 
@@ -404,6 +592,7 @@ def main() -> None:
     if unknown:
         sys.exit(f"Unknown model preset(s): {unknown}")
 
+    multi_run = len(model_names) > 1
     all_reports = []
     all_metrics = []
 
@@ -412,9 +601,10 @@ def main() -> None:
         epochs = epochs_override or preset["epochs"]
 
         def builder(model_name=model_name):
+            augment_layer = make_augmentation_layers(args.augmentation)
             if model_name == "cnn":
-                return build_cnn()
-            return build_mlp(preset["hidden_layers"])
+                return build_cnn(augment_layer)
+            return build_mlp(preset["hidden_layers"], augment_layer)
 
         print(f"\n=== Training preset: {model_name} ===")
         model, history, test_loss, test_acc, probs = train_and_evaluate(
@@ -449,6 +639,7 @@ def main() -> None:
             cls_report=cls_report,
             confusion=confusion,
             device=device,
+            augmentation=args.augmentation,
         )
         print(report_text)
         all_reports.append(report_text)
@@ -457,6 +648,7 @@ def main() -> None:
             "model": model.name,
             "preset": model_name,
             "device": device,
+            "augmentation": args.augmentation,
             "test_loss": test_loss,
             "test_accuracy": test_acc,
             "top2_accuracy": top2_acc,
@@ -467,12 +659,38 @@ def main() -> None:
         }
         all_metrics.append(metrics)
 
+        if args.save_history_csv:
+            history_path = resolve_generic_path(
+                base_path=args.save_history_csv,
+                preset_name=model_name,
+                multi=multi_run,
+                default_filename="history.csv",
+            )
+            save_history_csv(history, history_path)
+
+        if args.save_plots:
+            curve_path = resolve_plot_path(
+                base_path=args.save_plots,
+                preset_name=model_name,
+                multi=multi_run,
+                kind="learning",
+            )
+            plot_learning_curves(history, f"{model.name} learning curves", curve_path)
+
+            conf_path = resolve_plot_path(
+                base_path=args.save_plots,
+                preset_name=model_name,
+                multi=multi_run,
+                kind="confusion",
+            )
+            plot_confusion_matrix(confusion, f"{model.name} confusion matrix", conf_path)
+
         if args.save_model:
             save_model_artifact(
                 model=model,
                 base_path=args.save_model,
                 preset_name=model_name,
-                multi=len(model_names) > 1,
+                multi=multi_run,
             )
 
     # Persist artifacts if requested

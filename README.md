@@ -11,7 +11,7 @@ Single-file, GPU-first MNIST classifier that compares shallow MLP, deeper MLP, a
 ## Quickstart
 ```bash
 python -m venv .venv && source .venv/bin/activate
-pip install tensorflow[and-cuda] scikit-learn
+pip install tensorflow[and-cuda] scikit-learn matplotlib
 python mnist_portfolio.py --demo --model mlp-deep --device auto
 ```
 `--demo` runs 1 epoch on a reduced split for a fast sanity check.
@@ -23,6 +23,8 @@ python mnist_portfolio.py --demo --model mlp-deep --device auto
   `mnist_portfolio.py --model cnn --device gpu --require-gpu`
 - Comparative run (all presets, sequential):  
   `mnist_portfolio.py --model all --device auto --save-report results/compare.txt --save-metrics results/compare.json`
+- With light augmentation + plots + CSV learning curves:  
+  `mnist_portfolio.py --model cnn --augmentation light --save-plots results/plots --save-history-csv results/histories`
 - CPU fallback: add `--device cpu` (omit `--require-gpu`).
 
 Key flags:
@@ -30,6 +32,9 @@ Key flags:
 - `--epochs`, `--batch-size`, `--validation-split` for training control.
 - `--train-limit` / `--test-limit` for small experiments.
 - `--save-report`, `--save-metrics`, `--save-model` to export artifacts.
+- `--augmentation` set to `light` or `strong` for on-the-fly jitter (training only).
+- `--save-history-csv` dumps per-epoch accuracy/loss for logging tools.
+- `--save-plots` writes learning-curve + confusion-matrix PNGs (directory or filename prefix).
 
 ## GPU results (RTX 3090, full MNIST)
 | Model        | Params   | Test acc | Next-Best Option | Top-2 | Top-3 | Notes |
@@ -41,12 +46,14 @@ Key flags:
 Artifacts from the run:
 - Reports/metrics: `results/compare.txt`, `results/compare.json`
 - Saved models (SavedModel): `results/models/mlp-shallow`, `results/models/mlp-deep`, `results/models/cnn`
+- Optional extras (generate on demand): `results/plots/*` for PNGs and `results/histories/*.csv` for learning curves.
 
 ## Outputs and how to read them
 - Accuracy and loss (test set): primary classification metric.
 - Top-k accuracy: ranking-style metric; how often the correct class is in the top k probabilities.
 - Next-Best Option: % of misclassified samples where the model’s 2nd choice is correct (evidence the learned manifold is close).
 - Confusion matrix and per-class stats: which digits drive errors (e.g., 4 vs 9, 5 vs 8).
+- Learning-curve CSV/plots: track convergence speed; compare augmentation vs. no augmentation runs.
 
 ## Suggested write-up structure (for a report)
 1) Problem & data: MNIST as supervised digit classification; balanced classes; simple preprocessing (normalize + channel add).
@@ -71,9 +78,9 @@ Artifacts from the run:
 - `archive_assignment/` — original assignment artifacts (kept for reference).
 
 ## Next steps (optional polish)
-- Add data augmentation switches (random shifts/rotations) to study robustness.
-- Log-friendly output (e.g., CSV for learning curves).
-- Small EDA block: class counts and pixel histograms to complement the model analysis.
+- Add small EDA block: class counts and pixel histograms to complement the model analysis.
+- Provide lightweight TFLite export for edge deployment benchmarking.
+- Add automated unit tests around metric calculations (top-k, Next-Best Option).
 
 ## Visual/easy-to-talk points
 - Accuracy ladder: CNN > deep MLP > shallow MLP; CNN jumps ~1.7% absolute over shallow MLP with modest parameter increase.
