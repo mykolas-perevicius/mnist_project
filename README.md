@@ -21,6 +21,11 @@ One-command full GPU experiment (all presets, strong augmentation, logged artifa
 ./run_full_gpu.sh
 ```
 
+To tag a run or tweak knobs without retyping everything:
+```bash
+AUG=light EPOCHS=12 BATCH=512 SEED=123 ./run_full_gpu.sh light-aug-12ep
+```
+
 ## Typical runs
 - Full MLP (deep) on GPU:  
   `mnist_portfolio.py --model mlp-deep --device gpu --require-gpu --save-report results/report.txt --save-metrics results/metrics.json --save-model results/models`
@@ -59,6 +64,11 @@ Latest “strong augmentation” experiment (Dec 1, 2025; 15 epochs, batch 512, 
 | CNN          | 0.9801   | 79.90%           | 0.9960| 0.9985| Best overall under augmentation. |
 
 Artifacts (logged under timestamped folder): `results/exp_20251201T104924Z/compare.txt`, `compare.json`, SavedModels, plots, histories, and logs.
+
+Generate fresh markdown tables from any compare.json:
+```bash
+python summarize_compare.py results/exp_20251201T104924Z/compare.json
+```
 
 ## Outputs and how to read them
 - Accuracy and loss (test set): primary classification metric.
