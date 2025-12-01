@@ -1,0 +1,407 @@
+
+============================================================
+Device configuration
+============================================================
+Preference      : gpu
+Require GPU     : True
+Built w/ CUDA   : True
+Physical GPUs   : [PhysicalDevice(name='/physical_device:GPU:0', device_type='GPU')]
+Logical GPUs    : [LogicalDevice(name='/device:GPU:0', device_type='GPU')]
+Using device    : /GPU:0
+
+Non-fatal device setup notes:
+  - memory growth failed: RuntimeError('Physical devices cannot be modified after being initialized')
+============================================================
+
+Train images: (60000, 28, 28, 1)  Labels: (60000,)
+Test  images: (10000, 28, 28, 1)  Labels: (10000,)
+
+
+=== Training preset: mlp-shallow ===
+
+Model summary:
+Model: "MLP"
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃ Layer (type)                    ┃ Output Shape           ┃       Param # ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│ input_image (InputLayer)        │ (None, 28, 28, 1)      │             0 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ augment_strong (Sequential)     │ (None, 28, 28, 1)      │             0 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ flatten (Flatten)               │ (None, 784)            │             0 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense_1 (Dense)                 │ (None, 128)            │       100,480 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ output (Dense)                  │ (None, 10)             │         1,290 │
+└─────────────────────────────────┴────────────────────────┴───────────────┘
+ Total params: 101,770 (397.54 KB)
+ Trainable params: 101,770 (397.54 KB)
+ Non-trainable params: 0 (0.00 B)
+Epoch 1/15
+106/106 - 4s - 42ms/step - accuracy: 0.4458 - loss: 1.6936 - val_accuracy: 0.8338 - val_loss: 0.8443
+Epoch 2/15
+106/106 - 1s - 13ms/step - accuracy: 0.6693 - loss: 1.1175 - val_accuracy: 0.8708 - val_loss: 0.5658
+Epoch 3/15
+106/106 - 2s - 18ms/step - accuracy: 0.7461 - loss: 0.8635 - val_accuracy: 0.8875 - val_loss: 0.4398
+Epoch 4/15
+106/106 - 3s - 31ms/step - accuracy: 0.7800 - loss: 0.7429 - val_accuracy: 0.9075 - val_loss: 0.3587
+Epoch 5/15
+106/106 - 2s - 15ms/step - accuracy: 0.8062 - loss: 0.6624 - val_accuracy: 0.9178 - val_loss: 0.3075
+Epoch 6/15
+106/106 - 1s - 13ms/step - accuracy: 0.8170 - loss: 0.6240 - val_accuracy: 0.9225 - val_loss: 0.2850
+Epoch 7/15
+106/106 - 1s - 13ms/step - accuracy: 0.8277 - loss: 0.5814 - val_accuracy: 0.9250 - val_loss: 0.2675
+Epoch 8/15
+106/106 - 1s - 14ms/step - accuracy: 0.8360 - loss: 0.5507 - val_accuracy: 0.9263 - val_loss: 0.2586
+Epoch 9/15
+106/106 - 1s - 14ms/step - accuracy: 0.8448 - loss: 0.5282 - val_accuracy: 0.9287 - val_loss: 0.2501
+Epoch 10/15
+106/106 - 1s - 12ms/step - accuracy: 0.8508 - loss: 0.5088 - val_accuracy: 0.9357 - val_loss: 0.2251
+Epoch 11/15
+106/106 - 1s - 13ms/step - accuracy: 0.8544 - loss: 0.4935 - val_accuracy: 0.9372 - val_loss: 0.2159
+Epoch 12/15
+106/106 - 1s - 11ms/step - accuracy: 0.8565 - loss: 0.4795 - val_accuracy: 0.9428 - val_loss: 0.2037
+Epoch 13/15
+106/106 - 1s - 11ms/step - accuracy: 0.8605 - loss: 0.4693 - val_accuracy: 0.9397 - val_loss: 0.2079
+Epoch 14/15
+106/106 - 1s - 12ms/step - accuracy: 0.8645 - loss: 0.4580 - val_accuracy: 0.9498 - val_loss: 0.1871
+Epoch 15/15
+106/106 - 1s - 12ms/step - accuracy: 0.8662 - loss: 0.4487 - val_accuracy: 0.9403 - val_loss: 0.2014
+Model: MLP
+Device: /GPU:0
+Augmentation   : strong
+Test loss: 0.2320
+Test accuracy: 0.9297
+Next-Best Option (overall): 71.83%
+Top-2 accuracy: 0.9802
+Top-3 accuracy: 0.9919
+
+Per-class 'Next-Best Option' percentages (only among misclassifications):
+  Digit 0:  62.5%
+  Digit 1:  30.8%
+  Digit 2:  74.7%
+  Digit 3:  77.4%
+  Digit 4:  78.1%
+  Digit 5:  79.0%
+  Digit 6:  66.7%
+  Digit 7:  72.0%
+  Digit 8:  65.5%
+  Digit 9:  77.4%
+
+Confusion matrix:
+
+[[ 964    1    1    1    1    1    3    1    7    0]
+ [   0 1122    4    2    0    1    2    0    4    0]
+ [  13    3  933   13   21    1    0   37   11    0]
+ [   2    5    9  948    1   20    0   14    6    5]
+ [   2    5    0    0  918    1    3    6    8   39]
+ [  10    4    0   20    2  830   24    1    0    1]
+ [  14    5    0    1   10   13  913    0    2    0]
+ [   0   16   41    0    5    0    0  953    0   13]
+ [  50    2   23   30   14   27    9   10  800    9]
+ [   6    8    0   16   31    6    0   24    2  916]]
+
+Classification report:
+
+              precision    recall  f1-score   support
+
+           0     0.9086    0.9837    0.9446       980
+           1     0.9582    0.9885    0.9731      1135
+           2     0.9228    0.9041    0.9134      1032
+           3     0.9195    0.9386    0.9290      1010
+           4     0.9153    0.9348    0.9249       982
+           5     0.9222    0.9305    0.9263       892
+           6     0.9570    0.9530    0.9550       958
+           7     0.9111    0.9270    0.9190      1028
+           8     0.9524    0.8214    0.8820       974
+           9     0.9318    0.9078    0.9197      1009
+
+    accuracy                         0.9297     10000
+   macro avg     0.9299    0.9289    0.9287     10000
+weighted avg     0.9302    0.9297    0.9292     10000
+
+Saved learning-curve CSV to results/exp_20251201T104924Z/histories/history-mlp-shallow.csv
+Saved plot to results/exp_20251201T104924Z/plots/mnist-learning-mlp-shallow.png
+Saved plot to results/exp_20251201T104924Z/plots/mnist-confusion-mlp-shallow.png
+Saved artifact at 'results/exp_20251201T104924Z/models/mlp-shallow'. The following endpoints are available:
+
+* Endpoint 'serve'
+  args_0 (POSITIONAL_ONLY): TensorSpec(shape=(None, 28, 28, 1), dtype=tf.float32, name='input_image')
+Output Type:
+  TensorSpec(shape=(None, 10), dtype=tf.float32, name=None)
+Captures:
+  130342057338512: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  130341781110224: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  130341781635920: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  130341781636880: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  130341781638608: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  130341781637840: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  130341781639952: TensorSpec(shape=(), dtype=tf.resource, name=None)
+Saved model to results/exp_20251201T104924Z/models/mlp-shallow
+
+=== Training preset: mlp-deep ===
+
+Model summary:
+Model: "MLP"
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃ Layer (type)                    ┃ Output Shape           ┃       Param # ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│ input_image (InputLayer)        │ (None, 28, 28, 1)      │             0 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ augment_strong (Sequential)     │ (None, 28, 28, 1)      │             0 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ flatten (Flatten)               │ (None, 784)            │             0 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense_1 (Dense)                 │ (None, 256)            │       200,960 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense_2 (Dense)                 │ (None, 128)            │        32,896 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ output (Dense)                  │ (None, 10)             │         1,290 │
+└─────────────────────────────────┴────────────────────────┴───────────────┘
+ Total params: 235,146 (918.54 KB)
+ Trainable params: 235,146 (918.54 KB)
+ Non-trainable params: 0 (0.00 B)
+Epoch 1/15
+106/106 - 3s - 27ms/step - accuracy: 0.5458 - loss: 1.4031 - val_accuracy: 0.8525 - val_loss: 0.5619
+Epoch 2/15
+106/106 - 1s - 13ms/step - accuracy: 0.7803 - loss: 0.7230 - val_accuracy: 0.9057 - val_loss: 0.3298
+Epoch 3/15
+106/106 - 1s - 13ms/step - accuracy: 0.8316 - loss: 0.5589 - val_accuracy: 0.9237 - val_loss: 0.2667
+Epoch 4/15
+106/106 - 1s - 13ms/step - accuracy: 0.8526 - loss: 0.4838 - val_accuracy: 0.9280 - val_loss: 0.2359
+Epoch 5/15
+106/106 - 1s - 14ms/step - accuracy: 0.8689 - loss: 0.4295 - val_accuracy: 0.9492 - val_loss: 0.1856
+Epoch 6/15
+106/106 - 1s - 14ms/step - accuracy: 0.8791 - loss: 0.3969 - val_accuracy: 0.9483 - val_loss: 0.1711
+Epoch 7/15
+106/106 - 2s - 15ms/step - accuracy: 0.8881 - loss: 0.3686 - val_accuracy: 0.9532 - val_loss: 0.1610
+Epoch 8/15
+106/106 - 1s - 14ms/step - accuracy: 0.8943 - loss: 0.3479 - val_accuracy: 0.9555 - val_loss: 0.1530
+Epoch 9/15
+106/106 - 3s - 33ms/step - accuracy: 0.9005 - loss: 0.3285 - val_accuracy: 0.9558 - val_loss: 0.1476
+Epoch 10/15
+106/106 - 1s - 14ms/step - accuracy: 0.9037 - loss: 0.3155 - val_accuracy: 0.9568 - val_loss: 0.1427
+Epoch 11/15
+106/106 - 1s - 13ms/step - accuracy: 0.9091 - loss: 0.2990 - val_accuracy: 0.9622 - val_loss: 0.1321
+Epoch 12/15
+106/106 - 1s - 13ms/step - accuracy: 0.9118 - loss: 0.2880 - val_accuracy: 0.9613 - val_loss: 0.1275
+Epoch 13/15
+106/106 - 1s - 14ms/step - accuracy: 0.9154 - loss: 0.2783 - val_accuracy: 0.9618 - val_loss: 0.1242
+Epoch 14/15
+106/106 - 1s - 13ms/step - accuracy: 0.9174 - loss: 0.2734 - val_accuracy: 0.9635 - val_loss: 0.1147
+Epoch 15/15
+106/106 - 1s - 13ms/step - accuracy: 0.9197 - loss: 0.2619 - val_accuracy: 0.9622 - val_loss: 0.1184
+Model: MLP
+Device: /GPU:0
+Augmentation   : strong
+Test loss: 0.1524
+Test accuracy: 0.9501
+Next-Best Option (overall): 74.15%
+Top-2 accuracy: 0.9871
+Top-3 accuracy: 0.9960
+
+Per-class 'Next-Best Option' percentages (only among misclassifications):
+  Digit 0:  42.9%
+  Digit 1:  55.0%
+  Digit 2:  83.0%
+  Digit 3:  89.1%
+  Digit 4:  79.3%
+  Digit 5:  86.7%
+  Digit 6:  74.1%
+  Digit 7:  83.3%
+  Digit 8:  60.8%
+  Digit 9:  76.1%
+
+Confusion matrix:
+
+[[ 973    1    1    0    1    0    1    2    1    0]
+ [   0 1115    4    4    0    1    4    2    5    0]
+ [   6    4  979    5   11    1    0   24    2    0]
+ [   0    0    6  964    1   16    0   14    6    3]
+ [   0    1    2    0  924    1    4   12    3   35]
+ [   3    4    0    4    1  862   15    2    1    0]
+ [   7    2    0    1    4   13  931    0    0    0]
+ [   0    8   19    0    5    0    0  992    0    4]
+ [  27    4   21   11   13   25   14    5  844   10]
+ [   2    6    1   12   28    9    1   32    1  917]]
+
+Classification report:
+
+              precision    recall  f1-score   support
+
+           0     0.9558    0.9929    0.9740       980
+           1     0.9738    0.9824    0.9781      1135
+           2     0.9477    0.9486    0.9482      1032
+           3     0.9630    0.9545    0.9587      1010
+           4     0.9352    0.9409    0.9381       982
+           5     0.9289    0.9664    0.9473       892
+           6     0.9598    0.9718    0.9658       958
+           7     0.9143    0.9650    0.9389      1028
+           8     0.9780    0.8665    0.9189       974
+           9     0.9463    0.9088    0.9272      1009
+
+    accuracy                         0.9501     10000
+   macro avg     0.9503    0.9498    0.9495     10000
+weighted avg     0.9506    0.9501    0.9499     10000
+
+Saved learning-curve CSV to results/exp_20251201T104924Z/histories/history-mlp-deep.csv
+Saved plot to results/exp_20251201T104924Z/plots/mnist-learning-mlp-deep.png
+Saved plot to results/exp_20251201T104924Z/plots/mnist-confusion-mlp-deep.png
+Saved artifact at 'results/exp_20251201T104924Z/models/mlp-deep'. The following endpoints are available:
+
+* Endpoint 'serve'
+  args_0 (POSITIONAL_ONLY): TensorSpec(shape=(None, 28, 28, 1), dtype=tf.float32, name='input_image')
+Output Type:
+  TensorSpec(shape=(None, 10), dtype=tf.float32, name=None)
+Captures:
+  130341723104144: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  130341723102608: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  130341723111056: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  130341723108560: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  130341723110480: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  130341723106256: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  130341723110096: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  130341723105488: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  130341723103568: TensorSpec(shape=(), dtype=tf.resource, name=None)
+Saved model to results/exp_20251201T104924Z/models/mlp-deep
+
+=== Training preset: cnn ===
+
+Model summary:
+Model: "CNN"
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃ Layer (type)                    ┃ Output Shape           ┃       Param # ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│ input_image (InputLayer)        │ (None, 28, 28, 1)      │             0 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ augment_strong (Sequential)     │ (None, 28, 28, 1)      │             0 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ conv1 (Conv2D)                  │ (None, 28, 28, 32)     │           320 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ pool1 (MaxPooling2D)            │ (None, 14, 14, 32)     │             0 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ conv2 (Conv2D)                  │ (None, 14, 14, 64)     │        18,496 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ pool2 (MaxPooling2D)            │ (None, 7, 7, 64)       │             0 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ flatten (Flatten)               │ (None, 3136)           │             0 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense1 (Dense)                  │ (None, 128)            │       401,536 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dropout (Dropout)               │ (None, 128)            │             0 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ output (Dense)                  │ (None, 10)             │         1,290 │
+└─────────────────────────────────┴────────────────────────┴───────────────┘
+ Total params: 421,642 (1.61 MB)
+ Trainable params: 421,642 (1.61 MB)
+ Non-trainable params: 0 (0.00 B)
+Epoch 1/15
+106/106 - 4s - 39ms/step - accuracy: 0.5831 - loss: 1.2379 - val_accuracy: 0.9412 - val_loss: 0.1944
+Epoch 2/15
+106/106 - 2s - 14ms/step - accuracy: 0.8189 - loss: 0.5700 - val_accuracy: 0.9558 - val_loss: 0.1467
+Epoch 3/15
+106/106 - 2s - 15ms/step - accuracy: 0.8631 - loss: 0.4409 - val_accuracy: 0.9650 - val_loss: 0.1155
+Epoch 4/15
+106/106 - 2s - 15ms/step - accuracy: 0.8887 - loss: 0.3644 - val_accuracy: 0.9703 - val_loss: 0.1006
+Epoch 5/15
+106/106 - 2s - 16ms/step - accuracy: 0.8999 - loss: 0.3239 - val_accuracy: 0.9720 - val_loss: 0.0881
+Epoch 6/15
+106/106 - 2s - 15ms/step - accuracy: 0.9092 - loss: 0.2901 - val_accuracy: 0.9752 - val_loss: 0.0853
+Epoch 7/15
+106/106 - 2s - 16ms/step - accuracy: 0.9170 - loss: 0.2716 - val_accuracy: 0.9720 - val_loss: 0.0891
+Epoch 8/15
+106/106 - 2s - 16ms/step - accuracy: 0.9227 - loss: 0.2527 - val_accuracy: 0.9780 - val_loss: 0.0771
+Epoch 9/15
+106/106 - 2s - 16ms/step - accuracy: 0.9272 - loss: 0.2395 - val_accuracy: 0.9767 - val_loss: 0.0779
+Epoch 10/15
+106/106 - 2s - 16ms/step - accuracy: 0.9309 - loss: 0.2279 - val_accuracy: 0.9773 - val_loss: 0.0741
+Epoch 11/15
+106/106 - 2s - 16ms/step - accuracy: 0.9359 - loss: 0.2114 - val_accuracy: 0.9785 - val_loss: 0.0772
+Epoch 12/15
+106/106 - 4s - 37ms/step - accuracy: 0.9389 - loss: 0.2005 - val_accuracy: 0.9798 - val_loss: 0.0748
+Epoch 13/15
+106/106 - 2s - 16ms/step - accuracy: 0.9407 - loss: 0.1972 - val_accuracy: 0.9797 - val_loss: 0.0724
+Epoch 14/15
+106/106 - 2s - 16ms/step - accuracy: 0.9431 - loss: 0.1893 - val_accuracy: 0.9813 - val_loss: 0.0690
+Epoch 15/15
+106/106 - 2s - 16ms/step - accuracy: 0.9427 - loss: 0.1863 - val_accuracy: 0.9823 - val_loss: 0.0650
+Model: CNN
+Device: /GPU:0
+Augmentation   : strong
+Test loss: 0.0664
+Test accuracy: 0.9801
+Next-Best Option (overall): 79.90%
+Top-2 accuracy: 0.9960
+Top-3 accuracy: 0.9985
+
+Per-class 'Next-Best Option' percentages (only among misclassifications):
+  Digit 0:  83.3%
+  Digit 1:  62.5%
+  Digit 2:  90.9%
+  Digit 3:  93.3%
+  Digit 4:  85.7%
+  Digit 5:  84.6%
+  Digit 6:  50.0%
+  Digit 7:  90.6%
+  Digit 8:  71.4%
+  Digit 9:  86.5%
+
+Confusion matrix:
+
+[[ 968    0    3    0    0    0    7    1    1    0]
+ [   0 1103    9    4    6    0    4    6    3    0]
+ [   0    0 1021    0    0    0    0    8    3    0]
+ [   0    0    5  995    0    4    0    3    3    0]
+ [   0    0    3    0  968    0    0    1    3    7]
+ [   1    0    0    1    0  879    9    0    2    0]
+ [   0    2    0    0    4    5  946    0    1    0]
+ [   0    0   17    1    6    0    0  996    1    7]
+ [   0    0   13    0    3    0    2    0  953    3]
+ [   0    0    0    0   19    7    0    5    6  972]]
+
+Classification report:
+
+              precision    recall  f1-score   support
+
+           0     0.9990    0.9878    0.9933       980
+           1     0.9982    0.9718    0.9848      1135
+           2     0.9533    0.9893    0.9710      1032
+           3     0.9940    0.9851    0.9896      1010
+           4     0.9622    0.9857    0.9738       982
+           5     0.9821    0.9854    0.9838       892
+           6     0.9773    0.9875    0.9823       958
+           7     0.9765    0.9689    0.9727      1028
+           8     0.9764    0.9784    0.9774       974
+           9     0.9828    0.9633    0.9730      1009
+
+    accuracy                         0.9801     10000
+   macro avg     0.9802    0.9803    0.9802     10000
+weighted avg     0.9803    0.9801    0.9801     10000
+
+Saved learning-curve CSV to results/exp_20251201T104924Z/histories/history-cnn.csv
+Saved plot to results/exp_20251201T104924Z/plots/mnist-learning-cnn.png
+Saved plot to results/exp_20251201T104924Z/plots/mnist-confusion-cnn.png
+Saved artifact at 'results/exp_20251201T104924Z/models/cnn'. The following endpoints are available:
+
+* Endpoint 'serve'
+  args_0 (POSITIONAL_ONLY): TensorSpec(shape=(None, 28, 28, 1), dtype=tf.float32, name='input_image')
+Output Type:
+  TensorSpec(shape=(None, 10), dtype=tf.float32, name=None)
+Captures:
+  130339399662864: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  130339399647312: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  130339399649808: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  130339399663248: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  130339399663440: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  130339399661136: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  130339399660944: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  130339399662672: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  130339399647696: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  130339399661328: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  130339399663056: TensorSpec(shape=(), dtype=tf.resource, name=None)
+Saved model to results/exp_20251201T104924Z/models/cnn
+
+Saved metrics to results/exp_20251201T104924Z/compare.json
+Saved report to results/exp_20251201T104924Z/compare.txt
+
+Run complete.
