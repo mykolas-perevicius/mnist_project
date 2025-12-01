@@ -55,6 +55,21 @@ Artifacts from the run:
 - Confusion matrix and per-class stats: which digits drive errors (e.g., 4 vs 9, 5 vs 8).
 - Learning-curve CSV/plots: track convergence speed; compare augmentation vs. no augmentation runs.
 
+## Visual gallery (CPU subset, 20k/5k split, 3 epochs on Dec 1, 2025)
+These visuals were produced with `mnist_portfolio.py --model all --batch-size 256 --epochs 3 --train-limit 20000 --test-limit 5000 --save-plots results/plots --save-history-csv results/histories`. GPU metrics above remain the primary benchmark; this gallery is for storytelling and slide-ready assets.
+
+Learning curves  
+- MLP shallow: ![Learning curves (MLP shallow)](results/plots/mnist-learning-mlp-shallow.png)  
+- MLP deep: ![Learning curves (MLP deep)](results/plots/mnist-learning-mlp-deep.png)  
+- CNN: ![Learning curves (CNN)](results/plots/mnist-learning-cnn.png)
+
+Confusion matrices  
+- MLP shallow: ![Confusion matrix (MLP shallow)](results/plots/mnist-confusion-mlp-shallow.png)  
+- MLP deep: ![Confusion matrix (MLP deep)](results/plots/mnist-confusion-mlp-deep.png)  
+- CNN: ![Confusion matrix (CNN)](results/plots/mnist-confusion-cnn.png)
+
+CSV learning curves for logging/EDA live in `results/histories/*.csv`. Quick-report/metrics for this subset run: `results/compare_vis.txt` and `results/compare_vis.json`.
+
 ## Suggested write-up structure (for a report)
 1) Problem & data: MNIST as supervised digit classification; balanced classes; simple preprocessing (normalize + channel add).
 2) Methods: shallow MLP (fewer parameters), deep MLP (more capacity), CNN (spatial filters). Device strategy (GPU-first) and seed for reproducibility.
